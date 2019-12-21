@@ -3,6 +3,7 @@ package com.hackerearth.esri.bank.service;
 import com.hackerearth.esri.bank.dao.BankAccountManagerDao;
 import com.hackerearth.esri.bank.model.BankTransactionDetailsResponse;
 import com.hackerearth.esri.bank.model.Data;
+import com.hackerearth.esri.bank.model.RepositoryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,15 @@ public class BankAccountManagerService {
             response.setMessage("Success");
             response.setData(data);
             return response;
+    }
+
+    public BankTransactionDetailsResponse deleteBankTransactionDetails(int id){
+        Data data = new Data();
+        BankTransactionDetailsResponse response = new BankTransactionDetailsResponse();
+        RepositoryResponse repositoryResponse = dao.deleteTransactionDetails(id);
+        response.setCode(repositoryResponse.getCode());
+        response.setMessage(repositoryResponse.getMessage());
+        response.setData(data);
+        return response;
     }
 }

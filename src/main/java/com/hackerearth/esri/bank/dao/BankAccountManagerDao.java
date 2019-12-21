@@ -1,6 +1,7 @@
 package com.hackerearth.esri.bank.dao;
 
 import com.hackerearth.esri.bank.entity.BankTransactionDetails;
+import com.hackerearth.esri.bank.model.RepositoryResponse;
 import com.hackerearth.esri.bank.repository.BankAccountManagerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,5 +24,19 @@ public class BankAccountManagerDao {
 
         Pageable page = PageRequest.of(0, size);
         return repository.findByIdGreaterThanOrderById(start, page);
+    }
+
+    public RepositoryResponse deleteTransactionDetails(int id){
+        RepositoryResponse response = new RepositoryResponse();
+
+        try {
+            repository.deleteById(id);
+            response.setCode(200);
+            response.setMessage("Success");
+        } catch(Exception e){
+            response.setCode(500);
+            response.setMessage(e.getMessage());
+        }
+        return response;
     }
 }
