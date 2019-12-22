@@ -2,6 +2,7 @@ package com.hackerearth.esri.bank.dao;
 
 import com.hackerearth.esri.bank.entity.BankTransactionDetails;
 import com.hackerearth.esri.bank.model.RepositoryResponse;
+import com.hackerearth.esri.bank.model.RequestParams;
 import com.hackerearth.esri.bank.repository.BankAccountManagerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +21,24 @@ public class BankAccountManagerDao {
     @Autowired
     private BankAccountManagerRepository repository;
 
-    public List<BankTransactionDetails> getBankTransactionDetails(int start, int size){
+    public RepositoryResponse createTransactionDetails(BankTransactionDetails bankTransactionDetails){
+        RepositoryResponse response = new RepositoryResponse();
 
-        Pageable page = PageRequest.of(0, size);
-        return repository.findByIdGreaterThanOrderById(start, page);
+        try {
+            BankTransactionDetails transactionRecord = repository.save(bankTransactionDetails);
+            response.setCode(200);
+            response.setMessage("Success");
+            response.setTransactionRecord(transactionRecord);
+        } catch(Exception e){
+            response.setCode(500);
+            response.setMessage(e.getMessage());
+        }
+        return response;
+    }
+
+    public List<BankTransactionDetails> getBankTransactionDetails(RequestParams requestParams){
+        Pageable page = PageRequest.of(0, requestParams.getSize());
+        return repository.findByIdGreaterThanOrderById(requestParams.getStart(), page);
     }
 
     public RepositoryResponse deleteTransactionDetails(int id){
@@ -38,5 +53,11 @@ public class BankAccountManagerDao {
             response.setMessage(e.getMessage());
         }
         return response;
+    }
+
+
+    public List<BankTransactionDetails> getBankTransactionDetailsByName(RequestParams requestParams, String name){
+        Pageable page = PageRequest.of(0, requestParams.getSize());
+        return repository.getByAccountNumber(name, requestParams.getStart(), page);
     }
 }
